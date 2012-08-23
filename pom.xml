@@ -4,10 +4,10 @@
 
     <groupId>com.esha</groupId>
     <artifactId>simpledb-appender</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Logback SimpleDB Appender</name>
-    <url>https://github.com/esha/simpledb-appender</url>
+    <url>https://github.com/tronda/simpledb-appender</url>
     <description>Logback Appender for Amazon SimpleDB</description>
     <inceptionYear>2012</inceptionYear>
 
@@ -25,9 +25,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/esha/simpledb-appender.git</connection>
-        <developerConnection>scm:git:git@github.com:esha/simpledb-appender.git</developerConnection>
-        <url>https://github.com/esha/simpledb-appender</url>
+        <connection>scm:git:git://github.com/tronda/simpledb-appender.git</connection>
+        <developerConnection>scm:git:git@github.com:tronda/simpledb-appender.git</developerConnection>
+        <url>https://github.com/tronda/simpledb-appender</url>
     </scm>
 
     <build>
