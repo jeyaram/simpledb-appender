@@ -59,7 +59,6 @@ import com.google.common.collect.ImmutableMap;
 public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
 
     private AmazonSimpleDB sdb = null;
-    private String dom = null;
     private SimpleDBConsumer consumer = null;
     private SimpleDBWriter writer = null;
     private BlockingQueue<SimpleDBRow> queue = null;
@@ -188,7 +187,7 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
     public SimpleDBAppender(AmazonSimpleDB sdb, String dom, SimpleDBConsumer consumer, SimpleDBWriter writer,
             BlockingQueue<SimpleDBRow> queue, String instanceId) {
         this.sdb = sdb;
-        this.dom = dom;
+        this.domainName = dom;
         this.consumer = consumer;
         this.writer = writer;
         this.queue = queue;
@@ -232,7 +231,7 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
                 // See if the domain exists
                 boolean found = false;
                 ListDomainsResult result = sdb.listDomains();
-                for (String domainName : result.getDomainNames()) {
+                for (String dom : result.getDomainNames()) {
                     if (dom.equals(domainName)) {
                         found = true;
                         break;
@@ -240,7 +239,7 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
                 }
                 // Didn't find it, so create it
                 if (!found) {
-                    sdb.createDomain(new CreateDomainRequest(dom));
+                    sdb.createDomain(new CreateDomainRequest(domainName));
                 }
             } catch (AmazonClientException e) {
                 addStatus(new ErrorStatus("Could not get access SimpleDB", this, e));
@@ -253,7 +252,7 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
         }
 
         if (writer == null) {
-            this.writer = new SimpleDBWriter(sdb, dom);
+            this.writer = new SimpleDBWriter(sdb, domainName);
         }
 
         if (timeZone != null) {
