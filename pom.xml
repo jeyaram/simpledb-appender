@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.esha</groupId>
+    <groupId>nl.zeekat</groupId>
     <artifactId>simpledb-appender</artifactId>
     <version>0.2.3-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -25,9 +25,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/tronda/simpledb-appender.git</connection>
-        <developerConnection>scm:git:git@github.com:tronda/simpledb-appender.git</developerConnection>
-        <url>https://github.com/tronda/simpledb-appender</url>
+        <connection>scm:git:git://github.com/joodie/simpledb-appender.git</connection>
+        <developerConnection>scm:git:git@github.com:joodie/simpledb-appender.git</developerConnection>
+        <url>https://github.com/joodie/simpledb-appender</url>
     </scm>
 
     <build>
