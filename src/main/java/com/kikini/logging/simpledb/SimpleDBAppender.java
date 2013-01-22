@@ -71,6 +71,7 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
 
     // required properties
     private String domainName;
+    private String endPoint;
     private String accessId;
     private String secretKey;
 
@@ -99,12 +100,14 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
         Properties props = new Properties();
         props.load(propStream);
         String dom = props.getProperty("domainName");
+        String endPoint = props.getProperty("endPoint");
         String host = props.getProperty("host");
         String accessId = props.getProperty("accessId");
         String secretKey = props.getProperty("secretKey");
         String timeZone = props.getProperty("timeZone");
 
         if (null != dom) setDomainName(dom);
+        if (null != endPoint) setEndPoint(endPoint);
         if (null != host) setHost(host);
         if (null != accessId) setAccessId(accessId);
         if (null != secretKey) setSecretKey(secretKey);
@@ -141,6 +144,16 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
      */
     public void setDomainName(String domainName) {
         this.domainName = domainName;
+    }
+
+    /**
+     * Sets the SimpleDB endPoint to use
+     * 
+     * @param endPoint
+     *        the endPoint to set
+     */
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
     }
 
     /**
@@ -184,10 +197,11 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
     /**
      * Dependency-Injection constructor
      */
-    public SimpleDBAppender(AmazonSimpleDB sdb, String dom, SimpleDBConsumer consumer, SimpleDBWriter writer,
+    public SimpleDBAppender(AmazonSimpleDB sdb, String dom, String endPoint, SimpleDBConsumer consumer, SimpleDBWriter writer,
             BlockingQueue<SimpleDBRow> queue, String instanceId) {
         this.sdb = sdb;
         this.domainName = dom;
+        this.endPoint = endPoint;
         this.consumer = consumer;
         this.writer = writer;
         this.queue = queue;
@@ -220,6 +234,10 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
             addStatus(new ErrorStatus("Domain name not set", this));
             requiredPropsSet = false;
         }
+        if (null == endPoint) {
+            addStatus(new ErrorStatus("EndPoint not set", this));
+            requiredPropsSet = false;
+        }
         if (!requiredPropsSet) return;
 
         if (sdb == null) {
@@ -227,6 +245,7 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
                 final AWSCredentials credentials =
                     new BasicAWSCredentials(accessId, secretKey);
                 sdb = new AmazonSimpleDBClient(credentials);
+                sdb.setEndpoint(this.endPoint);
 
                 // See if the domain exists
                 boolean found = false;

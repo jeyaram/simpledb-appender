@@ -45,6 +45,7 @@ public class SimpleDBAppenderTest {
 
     AmazonSimpleDB sdb;
     String dom;
+    String endPoint;
     SimpleDBConsumer consumer;
     SimpleDBWriter writer;
     BlockingQueue<SimpleDBRow> queue;
@@ -63,11 +64,12 @@ public class SimpleDBAppenderTest {
     public void setUp() {
         sdb = mock(AmazonSimpleDB.class);
         dom = "test";
+        endPoint = "sdb.ap-southeast-1.amazonaws.com";
         consumer = mock(SimpleDBConsumer.class);
         writer = mock(SimpleDBWriter.class);
         queue = mock(BlockingQueue.class);
         instanceId = "i-001";
-        appender = new SimpleDBAppender(sdb, dom, consumer, writer, queue, instanceId);
+        appender = new SimpleDBAppender(sdb, dom, endPoint, consumer, writer, queue, instanceId);
         event = mock(LoggingEvent.class);
         loggerName = "logger";
         level = Level.toLevel(Level.INFO_INT);

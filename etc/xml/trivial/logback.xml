@@ -1,6 +1,7 @@
 <configuration>
   <appender name="SIMPLEDB" class="com.kikini.logging.simpledb.SimpleDBAppender">
     <domainName>your_simpledb_domain</domainName>
+    <endPoint>your_region_end_point</endPoint>
     <accessId>your_aws_access_id</accessId>
     <secretKey>your_aws_secret_key</secretKey>
   </appender>
