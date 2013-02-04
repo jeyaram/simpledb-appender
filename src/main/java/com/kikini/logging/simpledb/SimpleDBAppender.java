@@ -19,7 +19,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.BlockingQueue;
@@ -39,7 +38,6 @@ import com.amazonaws.services.simpledb.AmazonSimpleDB;
 import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 import com.amazonaws.services.simpledb.model.CreateDomainRequest;
 import com.amazonaws.services.simpledb.model.ListDomainsResult;
-
 import com.google.common.collect.ImmutableMap;
 
 /**
@@ -72,6 +70,7 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
     // required properties
     private String domainName;
     private String endPoint;
+    private String instanceRole;
     private String accessId;
     private String secretKey;
 
@@ -102,6 +101,7 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
         String dom = props.getProperty("domainName");
         String endPoint = props.getProperty("endPoint");
         String host = props.getProperty("host");
+        String instanceRole = props.getProperty("instanceRole");
         String accessId = props.getProperty("accessId");
         String secretKey = props.getProperty("secretKey");
         String timeZone = props.getProperty("timeZone");
@@ -109,6 +109,7 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
         if (null != dom) setDomainName(dom);
         if (null != endPoint) setEndPoint(endPoint);
         if (null != host) setHost(host);
+        if (null != instanceRole) setInstanceRole(instanceRole);
         if (null != accessId) setAccessId(accessId);
         if (null != secretKey) setSecretKey(secretKey);
         if (null != timeZone) setTimeZone(timeZone);
@@ -179,6 +180,14 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
     }
 
     /**
+     * @param instanceRole
+     *        the instanceRole to set
+     */
+    public void setInstanceRole(String instanceRole) {
+        this.instanceRole = instanceRole;
+    }
+
+    /**
      * @param accessId
      *        the accessId to set
      */
@@ -222,6 +231,7 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
     @Override
     public void start() {
         boolean requiredPropsSet = true;
+        
         if (null == accessId) {
             addStatus(new ErrorStatus("Access ID not set", this));
             requiredPropsSet = false;
@@ -242,9 +252,14 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
 
         if (sdb == null) {
             try {
-                final AWSCredentials credentials =
-                    new BasicAWSCredentials(accessId, secretKey);
-                sdb = new AmazonSimpleDBClient(credentials);
+                if (instanceRole != null && !instanceRole.equals("")) {
+                	//Use instance profile credentials
+                    sdb = new AmazonSimpleDBClient();
+                } else {
+                    final AWSCredentials credentials =
+                            new BasicAWSCredentials(accessId, secretKey);
+                    sdb = new AmazonSimpleDBClient(credentials);
+                }
                 sdb.setEndpoint(this.endPoint);
 
                 // See if the domain exists
@@ -290,14 +305,14 @@ public class SimpleDBAppender extends AppenderBase<LoggingEvent> {
         super.start();
     }
 
-    private void queueForProcessing(String msg, String context, String logger, String level, long time, Map<String, String> mdcPropertyMap) {
-        SimpleDBRow row = new SimpleDBRow(msg, host, context, logger, level, time, loggingPeriodMillis, mdcPropertyMap);
+    private void queueForProcessing(String msg, String context, String logger, String level, String threadName, long time, Map<String, String> mdcPropertyMap) {
+        SimpleDBRow row = new SimpleDBRow(msg, host, context, logger, level, threadName, time, loggingPeriodMillis, mdcPropertyMap);
         queue.add(row);
     }
 
     @Override
     public void append(LoggingEvent event) {
         Map<String, String> mdcPropertyMap = ImmutableMap.copyOf(event.getMDCPropertyMap());
-        queueForProcessing(event.getFormattedMessage(), contextName, event.getLoggerName(), event.getLevel().toString(), event.getTimeStamp(), mdcPropertyMap);
+        queueForProcessing(event.getFormattedMessage(), contextName, event.getLoggerName(), event.getLevel().toString(), event.getThreadName(), event.getTimeStamp(), mdcPropertyMap);
     }
 }

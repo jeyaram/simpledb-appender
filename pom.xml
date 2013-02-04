@@ -4,7 +4,7 @@
 
     <groupId>nl.zeekat</groupId>
     <artifactId>simpledb-appender</artifactId>
-    <version>0.2.3-SNAPSHOT</version>
+    <version>0.2.3</version>
     <packaging>jar</packaging>
     <name>Logback SimpleDB Appender</name>
     <url>https://github.com/tronda/simpledb-appender</url>

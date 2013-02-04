@@ -59,7 +59,7 @@ public class SimpleDBShutdownHookTest {
      */
     @Test
     public void interruptBeforeWrite() {
-        SimpleDBRow row1 = new SimpleDBRow("test msg 1", "i-001", "com.kikini.test", "logger", "level", 1000000000000L, 1,  ImmutableMap.of("key", "value"));
+        SimpleDBRow row1 = new SimpleDBRow("test msg 1", "i-001", "com.kikini.test", "logger", "level", "thread", 1000000000000L, 1,  ImmutableMap.of("key", "value"));
         when(queue.isEmpty()).thenReturn(false, true);
         when(queue.peek()).thenReturn(row1);
         InOrder inOrder = inOrder(queue, writer, consumerThread);
@@ -77,8 +77,8 @@ public class SimpleDBShutdownHookTest {
     @SuppressWarnings("unchecked")
     @Test
     public void queueIsWritten() {
-        SimpleDBRow row1 = new SimpleDBRow("test msg 1", "i-001", "com.kikini.test", "logger", "level", 1000000000000L, 1,  ImmutableMap.of("key", "value"));
-        SimpleDBRow row2 = new SimpleDBRow("test msg 2", "i-001", "com.kikini.test", "logger", "level", 1500000000000L, 1,  ImmutableMap.of("key", "value"));
+        SimpleDBRow row1 = new SimpleDBRow("test msg 1", "i-001", "com.kikini.test", "logger", "level", "thread", 1000000000000L, 1,  ImmutableMap.of("key", "value"));
+        SimpleDBRow row2 = new SimpleDBRow("test msg 2", "i-001", "com.kikini.test", "logger", "level", "thread", 1500000000000L, 1,  ImmutableMap.of("key", "value"));
         ArgumentCaptor<List> argument = ArgumentCaptor.forClass(List.class);
         when(queue.isEmpty()).thenReturn(false, false, true);
         when(queue.peek()).thenReturn(row1, row2);

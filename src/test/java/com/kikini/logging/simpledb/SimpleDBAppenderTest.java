@@ -54,6 +54,7 @@ public class SimpleDBAppenderTest {
     LoggingEvent event;
     String loggerName;
     Level level;
+    String threadName;
     ArgumentCaptor<SimpleDBRow> argument;
 
     /**
@@ -73,9 +74,11 @@ public class SimpleDBAppenderTest {
         event = mock(LoggingEvent.class);
         loggerName = "logger";
         level = Level.toLevel(Level.INFO_INT);
+        threadName = "thread";
         argument = ArgumentCaptor.forClass(SimpleDBRow.class);
         when(event.getLoggerName()).thenReturn(loggerName);
         when(event.getLevel()).thenReturn(level);
+        when(event.getThreadName()).thenReturn(threadName);
         when(event.getFormattedMessage()).thenReturn("this is a log message");
         when(event.getTimeStamp()).thenReturn(1500000000000L);
         when(event.getMDCPropertyMap()).thenReturn(ImmutableMap.of("key", "value"));

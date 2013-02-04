@@ -2,8 +2,9 @@
   <appender name="SIMPLEDB" class="com.kikini.logging.simpledb.SimpleDBAppender">
     <domainName>your_simpledb_domain</domainName>
     <endPoint>your_region_end_point</endPoint>
-    <accessId>your_aws_access_id</accessId>
-    <secretKey>your_aws_secret_key</secretKey>
+    <instanceRole>true</instanceRole>
+    <accessId>dummy</accessId>
+    <secretKey>dummy</secretKey>
   </appender>
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">

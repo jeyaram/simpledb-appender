@@ -39,14 +39,16 @@ class SimpleDBRow implements Delayed {
     private String logger;
     private String level;
     private long time;
+    private String threadName;
     private Map<String, String> mdcPropertyMap;
 
-    SimpleDBRow(String msg, String host, String context, String logger, String level, long time, long granularity, Map<String, String> mdcPropertyMap) {
+    SimpleDBRow(String msg, String host, String context, String logger, String level, String threadName, long time, long granularity, Map<String, String> mdcPropertyMap) {
         this.msg = msg;
         this.host = host;
         this.context = context;
         this.logger = logger;
         this.level = level;
+        this.threadName = threadName; 
         this.time = time;
         this.delayed = new GranularDelay(granularity);
         this.mdcPropertyMap = ImmutableMap.copyOf(mdcPropertyMap);
@@ -70,6 +72,10 @@ class SimpleDBRow implements Delayed {
 
     public String getLevel() {
         return level;
+    }
+
+    public String getThreadName() {
+        return threadName;
     }
 
     public long getTime() {

@@ -62,9 +62,9 @@ public class SimpleDBWriterTest {
     @Before
     public void setUp() {
         DateTime now = new DateTime(2010, 2, 1, 12, 0, 0, 0, DateTimeZone.UTC);
-        SimpleDBRow row1 = new SimpleDBRow("test msg 1", "i-001", "com.kikini.test", "logger", "level", now.getMillis(), 1, ImmutableMap.of("key", "value"));
-        SimpleDBRow row2 = new SimpleDBRow("test msg 2", "i-001", "com.kikini.test", "logger", "level", now.plusMinutes(1).getMillis(), 1, ImmutableMap.of("key", "value"));
-        SimpleDBRow row3 = new SimpleDBRow("test msg 3", "i-001", "com.kikini.test", "logger", "level", now.plusMinutes(2).getMillis(), 1, ImmutableMap.of("key", "value"));
+        SimpleDBRow row1 = new SimpleDBRow("test msg 1", "i-001", "com.kikini.test", "logger", "level", "thread", now.getMillis(), 1, ImmutableMap.of("key", "value"));
+        SimpleDBRow row2 = new SimpleDBRow("test msg 2", "i-001", "com.kikini.test", "logger", "level", "thread", now.plusMinutes(1).getMillis(), 1, ImmutableMap.of("key", "value"));
+        SimpleDBRow row3 = new SimpleDBRow("test msg 3", "i-001", "com.kikini.test", "logger", "level", "thread", now.plusMinutes(2).getMillis(), 1, ImmutableMap.of("key", "value"));
         rows = Arrays.asList(row1, row2, row3);
         sdb = mock(AmazonSimpleDB.class);
         dom = "test";
@@ -95,7 +95,7 @@ public class SimpleDBWriterTest {
         List<ReplaceableItem> items = argument.getValue().getItems();
         for (ReplaceableItem item : items) {
             List<ReplaceableAttribute> vals = item.getAttributes();
-            assertTrue(vals.size() == 7);
+            assertTrue(vals.size() == 8);
         }
     }
 
@@ -122,7 +122,7 @@ public class SimpleDBWriterTest {
             // be 3000 bytes
             longMsg = longMsg + '花';
         }
-        SimpleDBRow row1 = new SimpleDBRow(longMsg, "i-001", "com.kikini.test", "logger", "level", 1000000000000L, 1, ImmutableMap.of("key", "value"));
+        SimpleDBRow row1 = new SimpleDBRow(longMsg, "i-001", "com.kikini.test", "logger", "level", "thread", 1000000000000L, 1, ImmutableMap.of("key", "value"));
         writer.writeRows(Collections.singletonList(row1));
         verify(sdb).batchPutAttributes(argument.capture());
         List<ReplaceableItem> items = argument.getValue().getItems();
@@ -144,7 +144,7 @@ public class SimpleDBWriterTest {
     public void putsAreBatchedTest() {
         List<SimpleDBRow> tooManyRows = new ArrayList<SimpleDBRow>();
         for (int i = 0; i < 30; i++) {
-            tooManyRows.add(new SimpleDBRow("test msg " + i, "i-001", "com.kikini.test", "logger", "level", 1000000000000L, 1,  ImmutableMap.of("key", "value")));
+            tooManyRows.add(new SimpleDBRow("test msg " + i, "i-001", "com.kikini.test", "logger", "level", "thread", 1000000000000L, 1,  ImmutableMap.of("key", "value")));
         }
         writer.writeRows(tooManyRows);
         verify(sdb, times(2)).batchPutAttributes(argument.capture());

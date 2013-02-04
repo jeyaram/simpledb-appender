@@ -53,6 +53,7 @@ class SimpleDBWriter {
     private static final String TIME_COLUMN = "time";
     private static final String MESSAGE_COLUMN = "msg";
     private static final String LEVEL_COLUMN = "level";
+    private static final String THREAD_COLUMN = "thread";
     private static final String LOGGER_COLUMN = "logger";
     private static final String MDC_COLUMN_PREFIX = "mdc.";
 
@@ -132,6 +133,7 @@ class SimpleDBWriter {
                 addIfNotNull(atts, HOST_COLUMN, row.getHost());
                 addIfNotNull(atts, MESSAGE_COLUMN, row.getMsg());
                 addIfNotNull(atts, LEVEL_COLUMN, row.getLevel());
+                addIfNotNull(atts, THREAD_COLUMN, row.getThreadName());
                 addIfNotNull(atts, LOGGER_COLUMN, row.getLogger());
                 addIfNotNull(atts, CONTEXT_COLUMN, row.getContext());
                 addIfNotNull(atts, TIME_COLUMN, formatTime(row.getTime()));
